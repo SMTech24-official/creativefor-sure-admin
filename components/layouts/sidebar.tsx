@@ -158,10 +158,7 @@ const Sidebar = () => {
                                             <Link href="/products/list">{t('All Products')}</Link>
                                         </li>
                                         <li>
-                                            <Link href="/apps/invoice/preview">{t('preview')}</Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/apps/invoice/add">{t('add')}</Link>
+                                            <Link href="/products/add">{t('add')}</Link>
                                         </li>
                                         <li>
                                             <Link href="/apps/invoice/edit">{t('edit')}</Link>
