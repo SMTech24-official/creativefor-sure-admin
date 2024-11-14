@@ -209,7 +209,7 @@ const ProductsTable = () => {
                             <IconTrashLines />
                             Delete
                         </button>
-                        <Link href="/apps/invoice/add" className="btn btn-primary gap-2">
+                        <Link href="/products/add" className="btn btn-primary gap-2">
                             <IconPlus />
                             Add New
                         </Link>
