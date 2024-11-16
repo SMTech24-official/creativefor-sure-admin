@@ -78,19 +78,6 @@ const ComponentsUsersAccountSettingsTabs = () => {
                                     <input id="profession" type="text" placeholder="Web Developer" className="form-input" />
                                 </div>
                                 <div>
-                                    <label htmlFor="country">Country</label>
-                                    <select id="country" className="form-select text-white-dark" name="country" defaultValue="United States">
-                                        <option value="All Countries">All Countries</option>
-                                        <option value="United States">United States</option>
-                                        <option value="India">India</option>
-                                        <option value="Japan">Japan</option>
-                                        <option value="China">China</option>
-                                        <option value="Brazil">Brazil</option>
-                                        <option value="Norway">Norway</option>
-                                        <option value="Canada">Canada</option>
-                                    </select>
-                                </div>
-                                <div>
                                     <label htmlFor="address">Address</label>
                                     <input id="address" type="text" placeholder="New York" className="form-input" />
                                 </div>
@@ -128,25 +115,25 @@ const ComponentsUsersAccountSettingsTabs = () => {
                         <h6 className="mb-5 text-lg font-bold">Social</h6>
                         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                             <div className="flex">
-                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold dark:bg-[#1b2e4b] ltr:mr-2 rtl:ml-2">
                                     <IconLinkedin className="h-5 w-5" />
                                 </div>
                                 <input type="text" placeholder="jimmy_turner" className="form-input" />
                             </div>
                             <div className="flex">
-                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold dark:bg-[#1b2e4b] ltr:mr-2 rtl:ml-2">
                                     <IconTwitter className="h-5 w-5" />
                                 </div>
                                 <input type="text" placeholder="jimmy_turner" className="form-input" />
                             </div>
                             <div className="flex">
-                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold dark:bg-[#1b2e4b] ltr:mr-2 rtl:ml-2">
                                     <IconFacebook className="h-5 w-5" />
                                 </div>
                                 <input type="text" placeholder="jimmy_turner" className="form-input" />
                             </div>
                             <div className="flex">
-                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                                <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold dark:bg-[#1b2e4b] ltr:mr-2 rtl:ml-2">
                                     <IconGithub />
                                 </div>
                                 <input type="text" placeholder="jimmy_turner" className="form-input" />
