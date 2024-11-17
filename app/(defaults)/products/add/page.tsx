@@ -1,21 +1,38 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UploadIcon } from '@/components/icon/UploadIcon';
-import ProductSchema from './ProductSchema';
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UploadIcon } from "@/components/icon/UploadIcon";
+import ProductSchema from "./ProductSchema";
+import { useCreateCigarMutation } from "@/store/api/cigar/cigarApi";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function ProductUploadForm() {
-    const [description, setDescription] = useState('');
+    const router = useRouter();
+
+    const [createCigar, { isLoading }] = useCreateCigarMutation();
+    const [description, setDescription] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [filePreview, setFilePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,13 +53,17 @@ export default function ProductUploadForm() {
         setFile(null);
         setFilePreview(null);
         if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            fileInputRef.current.value = "";
         }
     };
 
-    const handleGalleryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleGalleryChange = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const selectedFiles = Array.from(event.target.files || []);
-        const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+        const newPreviews = selectedFiles.map((file) =>
+            URL.createObjectURL(file)
+        );
 
         setGalleryFiles(selectedFiles);
         setGalleryPreviews(newPreviews);
@@ -61,6 +82,7 @@ export default function ProductUploadForm() {
         register,
         handleSubmit,
         setValue,
+        watch,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(ProductSchema),
@@ -68,11 +90,43 @@ export default function ProductUploadForm() {
 
     const handleDescriptionChange = (value: string) => {
         setDescription(value);
-        setValue('description', value);
+        setValue("productDescription", value);
     };
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = async (data: any) => {
+        const toastID = toast.loading("Uploading product...");
+        // // const formData = new FormData();
+
+        // // Object.keys(data).forEach((key) => {
+        // //     formData.append(key, data[key]);
+        // // });
+        data.cigarImage = "http://localhost:8080";
+        data.productDescription = description;
+        data.cigarLength = Number(data.cigarLength);
+        data.cigarRingGauge = Number(data.cigarRingGauge);
+
+        try {
+            // Assuming `createCigar` expects a FormData object as an argument
+            const res = await createCigar(data).unwrap();
+
+            if (res?.data?.success) {
+                toast.success(res?.data?.message, {
+                    duration: 3000,
+                    id: toastID,
+                });
+                router.push("/products/list");
+            } else {
+                toast.error(res?.data?.message, {
+                    duration: 3000,
+                    id: toastID,
+                });
+            }
+        } catch (error: any) {
+            toast.error(error?.data?.message, {
+                duration: 3000,
+                id: toastID,
+            });
+        }
     };
 
     return (
@@ -84,33 +138,86 @@ export default function ProductUploadForm() {
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                            <Label htmlFor="title">Title</Label>
-                            <Input id="title" placeholder="Enter cigar title" {...register('title')} className={`${errors?.title ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.title && <p className="text-red-500">{errors.title.message}</p>}
+                            <Label htmlFor="cigarName">Cigar Name</Label>
+                            <Input
+                                id="cigarName"
+                                placeholder="Enter cigar title"
+                                {...register("cigarName")}
+                                className={`${
+                                    errors?.cigarName
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.cigarName && (
+                                <p className="text-red-500">
+                                    {errors.cigarName.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="brand">Brand</Label>
-                            <Input id="brand" placeholder="Enter cigar brand" {...register('brand')} className={`${errors?.brand ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.brand && <p className="text-red-500">{errors.brand.message}</p>}
+                            <Label htmlFor="brandId">Brand</Label>
+                            <Input
+                                id="brandId"
+                                placeholder="Enter cigar brand"
+                                {...register("brandId")}
+                                className={`${
+                                    errors?.brandId
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.brandId && (
+                                <p className="text-red-500">
+                                    {errors.brandId.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="barcode">Barcode</Label>
-                            <Input id="barcode" placeholder="Enter barcode" {...register('barcode')} className={`${errors?.barcode ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.barcode && <p className="text-red-500">{errors.barcode.message}</p>}
+                            <Label htmlFor="qrCode">QR Code</Label>
+                            <Input
+                                id="qrCode"
+                                placeholder="Enter QR Code"
+                                {...register("qrCode")}
+                                className={`${
+                                    errors?.qrCode
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.qrCode && (
+                                <p className="text-red-500">
+                                    {errors.qrCode.message as string}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="description">Description</Label>
-                        <ReactQuill id="description" value={description} onChange={handleDescriptionChange} placeholder="Enter cigar description" theme="snow" />
+                        <ReactQuill
+                            id="productDescription"
+                            value={description}
+                            onChange={(value: string) => setDescription(value)}
+                            placeholder="Enter cigar description"
+                            theme="snow"
+                        />
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
                             <div className="grid w-full max-w-sm items-center gap-1.5">
-                                <Label htmlFor="file">Upload File</Label>
+                                <Label htmlFor="cigarImage">Upload File</Label>
                                 <div className="flex items-center gap-2">
-                                    <Input ref={fileInputRef} id="file" type="file" className="flex-1" onChange={handleFileChange} />
+                                    <Input
+                                        {...register("cigarImage")}
+                                        defaultValue={watch("strength")}
+                                        ref={fileInputRef}
+                                        id="cigarImage"
+                                        type="file"
+                                        className="flex-1"
+                                        onChange={handleFileChange}
+                                    />
                                     <span className="rounded-md border p-2">
                                         <UploadIcon className="h-5 w-5" />
                                     </span>
@@ -119,20 +226,38 @@ export default function ProductUploadForm() {
                                     <div className="mt-2 grid gap-2">
                                         <div className="flex items-center gap-2">
                                             <img
-                                                src={filePreview || '/placeholder.svg'}
+                                                src={
+                                                    filePreview ||
+                                                    "/placeholder.svg"
+                                                }
                                                 alt="File preview"
                                                 width="64"
                                                 height="64"
                                                 className="rounded-md"
-                                                style={{ aspectRatio: '64/64', objectFit: 'cover' }}
+                                                style={{
+                                                    aspectRatio: "64/64",
+                                                    objectFit: "cover",
+                                                }}
                                             />
                                             <div>
-                                                <p className="font-medium">{file.name}</p>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">{file.size < 1024 ? `${file.size} bytes` : `${(file.size / 1024).toFixed(2)} KB`}</p>
+                                                <p className="font-medium">
+                                                    {file.name}
+                                                </p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {file.size < 1024
+                                                        ? `${file.size} bytes`
+                                                        : `${(
+                                                              file.size / 1024
+                                                          ).toFixed(2)} KB`}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="flex justify-end">
-                                            <Button variant="outline" size="sm" onClick={handleRemoveFile}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={handleRemoveFile}
+                                            >
                                                 Remove
                                             </Button>
                                         </div>
@@ -140,7 +265,7 @@ export default function ProductUploadForm() {
                                 )}
                             </div>
                         </div>
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                             <div className="grid w-full max-w-sm items-center gap-1.5">
                                 <Label htmlFor="gallery">Gallery Images</Label>
                                 <div className="flex items-center gap-2">
@@ -150,150 +275,337 @@ export default function ProductUploadForm() {
                                         accept="image/*"
                                         multiple
                                         onChange={handleGalleryChange}
-                                        className={`flex-1 ${errors?.gallery ? 'border-red-500 ring-red-500' : ''}`}
+                                        className={`flex-1 ${
+                                            errors?.gallery
+                                                ? "border-red-500 ring-red-500"
+                                                : ""
+                                        }`}
                                     />
                                     <span className="rounded-md border p-2">
                                         <UploadIcon className="h-5 w-5" />
                                     </span>
                                 </div>
-                                {errors?.gallery && <p className="text-red-500">{errors.gallery.message}</p>}
+                                {errors?.gallery && (
+                                    <p className="text-red-500">
+                                        {errors.gallery.message as string}
+                                    </p>
+                                )}
                                 <div className="mt-2 grid gap-2">
                                     {galleryPreviews.map((preview, index) => (
-                                        <div key={index} className="flex items-center gap-2">
+                                        <div
+                                            key={index}
+                                            className="flex items-center gap-2"
+                                        >
                                             <img
                                                 src={preview}
-                                                alt={`Gallery preview ${index + 1}`}
+                                                alt={`Gallery preview ${
+                                                    index + 1
+                                                }`}
                                                 width="64"
                                                 height="64"
                                                 className="rounded-md"
-                                                style={{ aspectRatio: '64/64', objectFit: 'cover' }}
+                                                style={{
+                                                    aspectRatio: "64/64",
+                                                    objectFit: "cover",
+                                                }}
                                             />
                                             <div>
-                                                <p className="font-medium">{galleryFiles[index].name}</p>
+                                                <p className="font-medium">
+                                                    {galleryFiles[index].name}
+                                                </p>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                    {galleryFiles[index].size < 1024 ? `${galleryFiles[index].size} bytes` : `${(galleryFiles[index].size / 1024).toFixed(2)} KB`}
+                                                    {galleryFiles[index].size <
+                                                    1024
+                                                        ? `${galleryFiles[index].size} bytes`
+                                                        : `${(
+                                                              galleryFiles[
+                                                                  index
+                                                              ].size / 1024
+                                                          ).toFixed(2)} KB`}
                                                 </p>
                                             </div>
-                                            <Button variant="outline" size="sm" onClick={() => handleRemoveGalleryImage(index)}>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handleRemoveGalleryImage(
+                                                        index
+                                                    )
+                                                }
+                                            >
                                                 Remove
                                             </Button>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="space-y-2">
-                            <Label htmlFor="shape">Cigar Shape</Label>
-                            <Select {...register('shape')}>
-                                <SelectTrigger id="shape">
+                            <Label htmlFor="cigarShape">Cigar Shape</Label>
+                            <Select
+                                onValueChange={(value) =>
+                                    setValue("cigarShape", value)
+                                }
+                                defaultValue={watch("cigarShape")}
+                            >
+                                <SelectTrigger id="cigarShape">
                                     <SelectValue placeholder="Select shape" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="parejo">Parejo</SelectItem>
-                                    <SelectItem value="figurado">Figurado</SelectItem>
-                                    <SelectItem value="torpedo">Torpedo</SelectItem>
+                                    <SelectItem value="parejo">
+                                        Parejo
+                                    </SelectItem>
+                                    <SelectItem value="figurado">
+                                        Figurado
+                                    </SelectItem>
+                                    <SelectItem value="torpedo">
+                                        Torpedo
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors?.shape && <p className="text-red-500">{errors.shape.message}</p>}
+                            {errors?.cigarShape && (
+                                <p className="text-red-500">
+                                    {errors.cigarShape.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="section">Cigar Section</Label>
-                            <Input id="section" placeholder="Enter section" {...register('section')} className={`${errors?.section ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.section && <p className="text-red-500">{errors.section.message}</p>}
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="length">Cigar Length (inches)</Label>
+                            <Label htmlFor="cigarSection">Cigar Section</Label>
                             <Input
-                                id="length"
+                                id="cigarSection"
+                                placeholder="Enter section"
+                                {...register("cigarSection")}
+                                className={`${
+                                    errors?.cigarSection
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.cigarSection && (
+                                <p className="text-red-500">
+                                    {errors.cigarSection.message as string}
+                                </p>
+                            )}
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="cigarLength">
+                                Cigar Length (inches)
+                            </Label>
+                            <Input
+                                id="cigarLength"
                                 type="number"
                                 step="0.1"
                                 placeholder="Enter length"
-                                {...register('length', { valueAsNumber: true })}
-                                className={`${errors?.length ? 'border-red-500 ring-red-500' : ''}`}
+                                {...register("cigarLength", {
+                                    valueAsNumber: true,
+                                })}
+                                className={`${
+                                    errors?.cigarLength
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
                             />
-                            {errors?.length && <p className="text-red-500">{errors.length.message}</p>}
+                            {errors?.cigarLength && (
+                                <p className="text-red-500">
+                                    {errors.cigarLength.message as string}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="space-y-2">
                             <Label htmlFor="origin">Origin</Label>
-                            <Input id="origin" placeholder="Enter origin" {...register('origin')} className={`${errors?.origin ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.origin && <p className="text-red-500">{errors.origin.message}</p>}
+                            <Input
+                                id="origin"
+                                placeholder="Enter origin"
+                                {...register("origin")}
+                                className={`${
+                                    errors?.origin
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.origin && (
+                                <p className="text-red-500">
+                                    {errors.origin.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="ringGauge">Cigar Ring Gauge</Label>
+                            <Label htmlFor="cigarRingGauge">
+                                Cigar Ring Gauge
+                            </Label>
                             <Input
-                                id="ringGauge"
+                                id="cigarRingGauge"
                                 type="number"
                                 placeholder="Enter ring gauge"
-                                {...register('ringGauge', { valueAsNumber: true })}
-                                className={`${errors?.ringGauge ? 'border-red-500 ring-red-500' : ''}`}
+                                {...register("cigarRingGauge", {
+                                    valueAsNumber: true,
+                                })}
+                                className={`${
+                                    errors?.cigarRingGauge
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
                             />
-                            {errors?.ringGauge && <p className="text-red-500">{errors.ringGauge.message}</p>}
+                            {errors?.cigarRingGauge && (
+                                <p className="text-red-500">
+                                    {errors.cigarRingGauge.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="strength">Strength</Label>
-                            <Select {...register('strength')}>
+                            <Select
+                                onValueChange={(value) =>
+                                    setValue("strength", value)
+                                }
+                                defaultValue={watch("strength")}
+                            >
                                 <SelectTrigger id="strength">
                                     <SelectValue placeholder="Select strength" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="mild">Mild</SelectItem>
-                                    <SelectItem value="medium">Medium</SelectItem>
+                                    <SelectItem value="medium">
+                                        Medium
+                                    </SelectItem>
                                     <SelectItem value="full">Full</SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors?.strength && <p className="text-red-500">{errors.strength.message}</p>}
+                            {errors?.strength && (
+                                <p className="text-red-500">
+                                    {errors.strength.message as string}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="space-y-2">
                             <Label htmlFor="wrapperColor">Wrapper Color</Label>
-                            <Input id="wrapperColor" placeholder="Enter wrapper color" {...register('wrapperColor')} className={`${errors?.wrapperColor ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.wrapperColor && <p className="text-red-500">{errors.wrapperColor.message}</p>}
+                            <Input
+                                id="wrapperColor"
+                                placeholder="Enter wrapper color"
+                                {...register("wrapperColor")}
+                                className={`${
+                                    errors?.wrapperColor
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.wrapperColor && (
+                                <p className="text-red-500">
+                                    {errors.wrapperColor.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="rollingType">Rolling Type</Label>
-                            <Input id="rollingType" placeholder="Enter rolling type" {...register('rollingType')} className={`${errors?.rollingType ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.rollingType && <p className="text-red-500">{errors.rollingType.message}</p>}
+                            <Input
+                                id="rollingType"
+                                placeholder="Enter rolling type"
+                                {...register("rollingType")}
+                                className={`${
+                                    errors?.rollingType
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.rollingType && (
+                                <p className="text-red-500">
+                                    {errors.rollingType.message as string}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="manufacturer">Manufacturer</Label>
-                            <Input id="manufacturer" placeholder="Enter manufacturer" {...register('manufacturer')} className={`${errors?.manufacturer ? 'border-red-500 ring-red-500' : ''}`} />
-                            {errors?.manufacturer && <p className="text-red-500">{errors.manufacturer.message}</p>}
+                            <Label htmlFor="cigarManufacturer">
+                                Manufacturer
+                            </Label>
+                            <Input
+                                id="cigarManufacturer"
+                                placeholder="Enter manufacturer"
+                                {...register("cigarManufacturer")}
+                                className={`${
+                                    errors?.cigarManufacturer
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
+                            {errors?.cigarManufacturer && (
+                                <p className="text-red-500">
+                                    {errors.cigarManufacturer.message as string}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="wrapper">Wrapper</Label>
-                        <Input id="wrapper" placeholder="Enter wrapper" {...register('wrapper')} className={`${errors?.wrapper ? 'border-red-500 ring-red-500' : ''}`} />
-                        {errors?.wrapper && <p className="text-red-500">{errors.wrapper.message}</p>}
+                        <Label htmlFor="cigarWrapper">Wrapper</Label>
+                        <Input
+                            id="cigarWrapper"
+                            placeholder="Enter wrapper"
+                            {...register("cigarWrapper")}
+                            className={`${
+                                errors?.cigarWrapper
+                                    ? "border-red-500 ring-red-500"
+                                    : ""
+                            }`}
+                        />
+                        {errors?.cigarWrapper && (
+                            <p className="text-red-500">
+                                {errors.cigarWrapper.message as string}
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="binder">Binder</Label>
-                        <Input id="binder" placeholder="Enter binder" {...register('binder')} className={`${errors?.binder ? 'border-red-500 ring-red-500' : ''}`} />
-                        {errors?.binder && <p className="text-red-500">{errors.binder.message}</p>}
+                        <Input
+                            id="binder"
+                            placeholder="Enter binder"
+                            {...register("binder")}
+                            className={`${
+                                errors?.binder
+                                    ? "border-red-500 ring-red-500"
+                                    : ""
+                            }`}
+                        />
+                        {errors?.binder && (
+                            <p className="text-red-500">
+                                {errors.binder.message as string}
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="filter">Filter</Label>
-                        <Select {...register('filter')}>
+                        <Select
+                            onValueChange={(value) => setValue("filter", value)}
+                            defaultValue={watch("filter")}
+                        >
                             <SelectTrigger id="filter">
                                 <SelectValue placeholder="Select filter" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="none">None</SelectItem>
-                                <SelectItem value="filter1">Filter 1</SelectItem>
-                                <SelectItem value="filter2">Filter 2</SelectItem>
+                                <SelectItem value="filter1">
+                                    Filter 1
+                                </SelectItem>
+                                <SelectItem value="filter2">
+                                    Filter 2
+                                </SelectItem>
                             </SelectContent>
                         </Select>
-                        {errors?.filter && <p className="text-red-500">{errors.filter.message}</p>}
+                        {errors?.filter && (
+                            <p className="text-red-500">
+                                {errors.filter.message as string}
+                            </p>
+                        )}
                     </div>
                 </CardContent>
 

@@ -1,18 +1,18 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
-    reducerPath: 'baseApi',
+    reducerPath: "baseApi",
     baseQuery: fetchBaseQuery({
         baseUrl: `https://creative-for-sure-backend.vercel.app/api/v1`,
-        credentials: 'include',
+        credentials: "include",
         prepareHeaders: (headers: any) => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             if (token) {
-                headers.set('authorization', ` ${token}`);
+                headers.set("authorization", ` ${token}`);
             }
             return headers;
         },
     }),
     endpoints: () => ({}),
-    tagTypes: ['Auth', 'Cigars'],
+    tagTypes: ["Auth", "Cigars"],
 });
