@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import IconMail from '../icon/icon-mail';
 import IconLockDots from '../icon/icon-lock-dots';
 import { loginFormSchema, LoginFormValues } from '@/app/(auth)/login/LoginSchema';
-import { useLoginMutation } from '@/store/api/authApi';
 import { toast } from 'sonner';
 import { addTokenToLocalStorage } from '@/utils/tokenHandler';
+import { useLoginMutation } from '@/store/api/auth/authApi';
 
 const ComponentsAuthLoginForm = () => {
     const router = useRouter();
@@ -24,23 +24,26 @@ const ComponentsAuthLoginForm = () => {
     });
 
     const onSubmit = async (data: LoginFormValues) => {
+        const loadingToastId = toast.loading('Logging in...');
+
         try {
             const res = await login(data).unwrap();
-            if (res?.success) {
-                await addTokenToLocalStorage(res?.data?.token);
 
+            if (res?.success) {
                 toast.success(res?.message, {
                     duration: 3000,
+                    id: loadingToastId,
                 });
-                router.push('/');
             } else {
-                toast.success(res?.message, {
+                toast.error(res?.message, {
                     duration: 3000,
+                    id: loadingToastId,
                 });
             }
-        } catch (e: any) {
-            toast.success(e, {
+        } catch (error: any) {
+            toast.error('Invalid Credentials', {
                 duration: 3000,
+                id: loadingToastId,
             });
         }
     };
@@ -81,8 +84,8 @@ const ComponentsAuthLoginForm = () => {
                 {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>}
             </div>
 
-            <button type="submit" disabled={isLoading} className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
-                {isLoading ? 'Signing in...' : 'Sign in'}
+            <button type="submit" className="btn btn-gradient !mt-6 w-full border-0 uppercase shadow-[0_10px_20px_-10px_rgba(67,97,238,0.44)]">
+                Sign in
             </button>
         </form>
     );
