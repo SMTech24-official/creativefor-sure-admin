@@ -1,8 +1,10 @@
 'use client';
 import App from '@/App';
-import { AppStore, makeStore } from '@/store';
+import store from '@/store';
 import { Provider } from 'react-redux';
-import React, { ReactNode, Suspense, useRef } from 'react';
+import React, { ReactNode, Suspense } from 'react';
+import { appWithI18Next } from 'ni18n';
+import { ni18nConfig } from 'ni18n.config.ts';
 import Loading from '@/components/layouts/loading';
 
 interface IProps {
@@ -10,13 +12,8 @@ interface IProps {
 }
 
 const ProviderComponent = ({ children }: IProps) => {
-    const storeRef = useRef<AppStore>();
-    if (!storeRef.current) {
-        storeRef.current = makeStore();
-    }
-
     return (
-        <Provider store={storeRef.current}>
+        <Provider store={store}>
             <Suspense fallback={<Loading />}>
                 <App>{children} </App>
             </Suspense>

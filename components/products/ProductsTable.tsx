@@ -21,7 +21,11 @@ type Cigar = {
 };
 
 const ProductsTable = () => {
+    // redux query
     const { data: cigarData, isLoading: loadingCigarData } = useGetAllCigarsQuery([]);
+    // const {} = use;
+
+    // states
     const [items, setItems] = useState<Cigar[]>([]);
     const [initialRecords, setInitialRecords] = useState<Cigar[]>([]);
     const [records, setRecords] = useState<Cigar[]>([]);
