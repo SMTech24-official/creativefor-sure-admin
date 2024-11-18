@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -23,14 +23,15 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { UploadIcon } from "@/components/icon/UploadIcon";
-import { useCreateCigarMutation } from "@/store/api/cigar/cigarApi";
+import { useUpdateCigarMutation } from "@/store/api/cigar/cigarApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import ProductSchema from "./ProductSchema";
+import ProductSchema from "../../add/ProductSchema";
 
-export default function ProductUploadForm() {
+export default function ProductUploadForm({ params }: any) {
     const router = useRouter();
-    const [createCigar, { isLoading }] = useCreateCigarMutation();
+    const [updateCigar, { isLoading: isUpdatingCigar }] =
+        useUpdateCigarMutation();
     const [description, setDescription] = useState("");
     // const [file, setFile] = useState<File | null>(null);
     // const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -89,12 +90,11 @@ export default function ProductUploadForm() {
     };
 
     const onSubmit = async (data: any) => {
-        const toastID = toast.loading("Uploading Cigar");
-
+        const toastID = toast.loading("Updating Cigar");
         try {
-            const res = await createCigar(data).unwrap();
+            const res = await updateCigar({ data, id: params?.id }).unwrap();
             if (res?.success) {
-                toast.success("Cigar added successfully", {
+                toast.success("Cigar updated successfully", {
                     duration: 3000,
                     id: toastID,
                 });
@@ -554,8 +554,8 @@ export default function ProductUploadForm() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button disabled={isLoading} type="submit">
-                        {isLoading ? "Uploading" : "Submit"}
+                    <Button disabled={isUpdatingCigar} type="submit">
+                        {isUpdatingCigar ? "Updating" : "Update"}
                     </Button>
                 </CardFooter>
             </Card>
