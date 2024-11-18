@@ -28,12 +28,12 @@ const cigarApi = baseApi.injectEndpoints({
             invalidatesTags: ["Cigars"],
         }),
 
-        getCigar: build.mutation({
-            query: (id: string) => ({
+        getCigar: build.query({
+            query: (id: number) => ({
                 url: `/cigarData/${id}`,
                 method: "GET",
             }),
-            invalidatesTags: ["Cigars"],
+            providesTags: ["Cigars"],
         }),
 
         deleteCigar: build.mutation({
@@ -49,6 +49,7 @@ const cigarApi = baseApi.injectEndpoints({
 export const {
     useGetAllCigarsQuery,
     useCreateCigarMutation,
-    useDeleteCigarMutation,
     useUpdateCigarMutation,
+    useGetCigarQuery,
+    useDeleteCigarMutation,
 } = cigarApi;

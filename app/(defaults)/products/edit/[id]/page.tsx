@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -20,10 +20,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { UploadIcon } from "@/components/icon/UploadIcon";
-import { useUpdateCigarMutation } from "@/store/api/cigar/cigarApi";
+import {
+    useGetCigarQuery,
+    useUpdateCigarMutation,
+} from "@/store/api/cigar/cigarApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ProductSchema from "../../add/ProductSchema";
@@ -32,6 +35,9 @@ export default function ProductUploadForm({ params }: any) {
     const router = useRouter();
     const [updateCigar, { isLoading: isUpdatingCigar }] =
         useUpdateCigarMutation();
+    const { data: cigarData, isLoading: isLoadingCigarData } = useGetCigarQuery(
+        params?.id
+    );
     const [description, setDescription] = useState("");
     // const [file, setFile] = useState<File | null>(null);
     // const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -79,10 +85,34 @@ export default function ProductUploadForm({ params }: any) {
         handleSubmit,
         setValue,
         watch,
+        reset,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(ProductSchema),
+        defaultValues: {},
     });
+
+    useEffect(() => {
+        if (cigarData?.data) {
+            reset({
+                cigarName: cigarData.data.cigarName,
+                cigarImage: cigarData.data.cigarImage,
+                cigarShape: cigarData.data.cigarShape,
+                cigarSection: cigarData.data.cigarSection,
+                cigarLength: cigarData.data.cigarLength,
+                origin: cigarData.data.origin,
+                cigarRingGauge: cigarData.data.cigarRingGauge,
+                strength: cigarData.data.strength,
+                wrapperColor: cigarData.data.wrapperColor,
+                rollingType: cigarData.data.rollingType,
+                cigarManufacturer: cigarData.data.cigarManufacturer,
+                cigarWrapper: cigarData.data.cigarWrapper,
+                qrCode: cigarData.data.qrCode,
+                brandId: cigarData.data.brandId,
+                productDescription: cigarData.data.productDescription,
+            });
+        }
+    }, [cigarData, reset]);
 
     const handleDescriptionChange = (value: string) => {
         setDescription(value);
@@ -123,7 +153,7 @@ export default function ProductUploadForm({ params }: any) {
                                 placeholder="Enter cigar title"
                                 {...register("cigarName")}
                                 className={`${
-                                    errors?.cigarName
+                                    (errors?.cigarName as string)
                                         ? "border-red-500 ring-red-500"
                                         : ""
                                 }`}
@@ -166,7 +196,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.qrCode && (
                                 <p className="text-red-500">
-                                    {errors.qrCode.message as string}
+                                    {errors?.qrCode.message as string}
                                 </p>
                             )}
                         </div>
