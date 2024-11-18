@@ -2,7 +2,6 @@ import { baseApi } from "../baseApi";
 
 const cigarApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        // Get all brands
         getAllCigars: build.query({
             query: () => ({
                 url: `/cigarData`,
@@ -10,6 +9,7 @@ const cigarApi = baseApi.injectEndpoints({
             }),
             providesTags: ["Cigars"],
         }),
+
         createCigar: build.mutation({
             query: (data: any) => ({
                 url: `/cigarData`,
@@ -18,7 +18,19 @@ const cigarApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Cigars"],
         }),
+
+        deleteCigar: build.mutation({
+            query: (id: number) => ({
+                url: `/cigarData/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Cigars"],
+        }),
     }),
 });
 
-export const { useGetAllCigarsQuery, useCreateCigarMutation } = cigarApi;
+export const {
+    useGetAllCigarsQuery,
+    useCreateCigarMutation,
+    useDeleteCigarMutation,
+} = cigarApi;

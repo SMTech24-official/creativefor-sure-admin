@@ -1,27 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import IconEdit from "@/components/icon/icon-edit";
-import IconEye from "@/components/icon/icon-eye";
 import IconPlus from "@/components/icon/icon-plus";
 import IconTrashLines from "@/components/icon/icon-trash-lines";
 import { sortBy } from "lodash";
 import { DataTableSortStatus, DataTable } from "mantine-datatable";
 import Link from "next/link";
-import { useGetAllCigarsQuery } from "@/store/api/cigar/cigarApi";
-
-type Cigar = {
-    id: string;
-    cigarName: string;
-    cigarImage: string;
-    cigarLength: number;
-    cigarRingGauge: number;
-    strength: string;
-    wrapperColor: string;
-    createdAt: string;
-};
+import {
+    useDeleteCigarMutation,
+    useGetAllCigarsQuery,
+} from "@/store/api/cigar/cigarApi";
+import { Cigar } from "@/types/cigar";
+import { toast } from "sonner";
 
 const ProductsTable = () => {
     // redux query
+    const [deleteCigar, { isLoading: isCigarDeleting }] =
+        useDeleteCigarMutation();
     const { data: cigarData, isLoading: loadingCigarData } =
         useGetAllCigarsQuery([]);
     // const {} = use;
@@ -33,7 +28,6 @@ const ProductsTable = () => {
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-    const [selectedRecords, setSelectedRecords] = useState<Cigar[]>([]);
     const [search, setSearch] = useState("");
     const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
         columnAccessor: "cigarName",
@@ -85,29 +79,22 @@ const ProductsTable = () => {
         setPage(1);
     }, [sortStatus]);
 
-    const deleteRow = (id: string | null = null) => {
-        if (
-            window.confirm("Are you sure want to delete the selected row(s)?")
-        ) {
-            if (id) {
+    const deleteRow = async (id: any) => {
+        const res = await deleteCigar(id).unwrap();
+
+        try {
+            if (res?.success) {
                 const updatedItems = items.filter((item) => item.id !== id);
                 setItems(updatedItems);
                 setInitialRecords(updatedItems);
                 setRecords(updatedItems);
-                setSelectedRecords([]);
                 setSearch("");
+                toast.success("Cigar deleted successfully");
             } else {
-                const ids = selectedRecords.map((record) => record.id);
-                const updatedItems = items.filter(
-                    (item) => !ids.includes(item.id)
-                );
-                setItems(updatedItems);
-                setInitialRecords(updatedItems);
-                setRecords(updatedItems);
-                setSelectedRecords([]);
-                setSearch("");
-                setPage(1);
+                toast.error("Failed to delete cigar");
             }
+        } catch (error: any) {
+            toast.error(error?.data?.message);
         }
     };
 
@@ -118,14 +105,6 @@ const ProductsTable = () => {
             <div className="invoice-table">
                 <div className="mb-4.5 flex flex-col gap-5 px-5 md:flex-row md:items-center">
                     <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            className="btn btn-danger gap-2"
-                            onClick={() => deleteRow()}
-                        >
-                            <IconTrashLines />
-                            Delete
-                        </button>
                         <Link
                             href="/products/add"
                             className="btn btn-primary gap-2"
@@ -219,8 +198,6 @@ const ProductsTable = () => {
                         onRecordsPerPageChange={setPageSize}
                         sortStatus={sortStatus}
                         onSortStatusChange={setSortStatus}
-                        selectedRecords={selectedRecords}
-                        onSelectedRecordsChange={setSelectedRecords}
                         paginationText={({ from, to, totalRecords }) =>
                             `Showing ${from} to ${to} of ${totalRecords} entries`
                         }
