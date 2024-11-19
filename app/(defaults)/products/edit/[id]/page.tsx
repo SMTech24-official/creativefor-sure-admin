@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-// import {
-//     Select,
-//     SelectContent,
-//     SelectItem,
-//     SelectTrigger,
-//     SelectValue,
-// } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { UploadIcon } from "@/components/icon/UploadIcon";
@@ -30,9 +30,11 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ProductSchema from "../../add/ProductSchema";
+import { useGetAllBrandsQuery } from "@/store/api/brands/brandsApi";
 
 export default function ProductUploadForm({ params }: any) {
-    const router = useRouter();
+    const { data: cigarBrands, isLoading: isLoadingCigarBrand } =
+        useGetAllBrandsQuery([]);
     const [updateCigar, { isLoading: isUpdatingCigar }] =
         useUpdateCigarMutation();
     const { data: cigarData, isLoading: isLoadingCigarData } = useGetCigarQuery(
@@ -84,7 +86,7 @@ export default function ProductUploadForm({ params }: any) {
         register,
         handleSubmit,
         setValue,
-        // watch,
+        watch,
         reset,
         formState: { errors },
     } = useForm({
@@ -189,21 +191,38 @@ export default function ProductUploadForm({ params }: any) {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="brandId">Brand</Label>
-                                    <Input
-                                        id="brandId"
-                                        placeholder="Enter cigar brand"
-                                        {...register("brandId")}
-                                        className={`${
-                                            errors?.brandId
-                                                ? "border-red-500 ring-red-500"
-                                                : ""
-                                        }`}
-                                    />
-                                    {errors?.brandId && (
-                                        <p className="text-red-500">
-                                            {errors.brandId.message}
-                                        </p>
-                                    )}
+                                    <Select
+                                        onValueChange={(value) =>
+                                            setValue("brandId", value)
+                                        }
+                                        defaultValue={watch("brandId")}
+                                    >
+                                        <SelectTrigger id="brandId">
+                                            <SelectValue placeholder="Select Brand" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {isLoadingCigarBrand ? (
+                                                <SelectItem value="Loading">
+                                                    Loading Brands
+                                                </SelectItem>
+                                            ) : cigarBrands?.success ? (
+                                                cigarBrands?.data?.map(
+                                                    (brand: any) => (
+                                                        <SelectItem
+                                                            key={brand?.id}
+                                                            value={brand?.id}
+                                                        >
+                                                            {brand?.name}
+                                                        </SelectItem>
+                                                    )
+                                                )
+                                            ) : (
+                                                <SelectItem value="Not Selected">
+                                                    No Brands Available
+                                                </SelectItem>
+                                            )}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="qrCode">QR Code</Label>
