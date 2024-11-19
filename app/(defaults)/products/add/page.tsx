@@ -27,9 +27,12 @@ import { useCreateCigarMutation } from "@/store/api/cigar/cigarApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ProductSchema from "./ProductSchema";
+import { useGetAllBrandsQuery } from "@/store/api/brands/brandsApi";
 
 export default function ProductUploadForm() {
     const router = useRouter();
+    const { data: cigarBrands, isLoading: isLoadingCigarBrand } =
+        useGetAllBrandsQuery([]);
     const [createCigar, { isLoading }] = useCreateCigarMutation();
     const [description, setDescription] = useState("");
     // const [file, setFile] = useState<File | null>(null);
@@ -136,21 +139,36 @@ export default function ProductUploadForm() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="brandId">Brand</Label>
-                            <Input
-                                id="brandId"
-                                placeholder="Enter cigar brand"
-                                {...register("brandId")}
-                                className={`${
-                                    errors?.brandId
-                                        ? "border-red-500 ring-red-500"
-                                        : ""
-                                }`}
-                            />
-                            {errors?.brandId && (
-                                <p className="text-red-500">
-                                    {errors.brandId.message as string}
-                                </p>
-                            )}
+                            <Select
+                                onValueChange={(value) =>
+                                    setValue("brandId", value)
+                                }
+                                defaultValue={watch("brandId")}
+                            >
+                                <SelectTrigger id="brandId">
+                                    <SelectValue placeholder="Select Brand" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {isLoadingCigarBrand ? (
+                                        <SelectItem value="Loading">
+                                            Loading Brands
+                                        </SelectItem>
+                                    ) : cigarBrands?.success ? (
+                                        cigarBrands?.data?.map((brand: any) => (
+                                            <SelectItem
+                                                key={brand?.id}
+                                                value={brand?.id}
+                                            >
+                                                {brand?.name}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value="Not Selected">
+                                            No Brands Available
+                                        </SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="qrCode">QR Code</Label>
