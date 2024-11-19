@@ -12,6 +12,7 @@ import {
 } from "@/store/api/cigar/cigarApi";
 import { Cigar } from "@/types/cigar";
 import { toast } from "sonner";
+import "@/styles/productTable.css";
 
 const ProductsTable = () => {
     // redux query
@@ -104,7 +105,7 @@ const ProductsTable = () => {
     return (
         <div className="panel border-white-light px-0 dark:border-[#1b2e4b]">
             <div className="invoice-table">
-                <div className="mb-4.5 flex flex-col gap-5 px-5 md:flex-row md:items-center">
+                <div className="mb-4.5 flex flex-col justify-between gap-5 px-5 md:flex-row md:items-center">
                     <div className="flex items-center gap-2">
                         <Link
                             href="/products/add"
@@ -114,7 +115,7 @@ const ProductsTable = () => {
                             Add New
                         </Link>
                     </div>
-                    <div className="ltr:ml-auto rtl:mr-auto">
+                    <div className="">
                         <input
                             type="text"
                             className="form-input w-auto"
@@ -133,6 +134,7 @@ const ProductsTable = () => {
                             {
                                 accessor: "cigarName",
                                 sortable: true,
+                                cellsClassName: "cigar-name",
                                 render: ({ cigarName, cigarImage }) => (
                                     <div className="flex items-center gap-3 font-semibold">
                                         <img
