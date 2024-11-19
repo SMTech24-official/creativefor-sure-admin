@@ -89,7 +89,23 @@ export default function ProductUploadForm({ params }: any) {
         formState: { errors },
     } = useForm({
         resolver: zodResolver(ProductSchema),
-        defaultValues: {},
+        defaultValues: {
+            cigarName: "",
+            cigarImage: "",
+            cigarShape: "",
+            cigarSection: "",
+            cigarLength: "",
+            origin: "",
+            cigarRingGauge: "",
+            strength: "",
+            wrapperColor: "",
+            rollingType: "",
+            cigarManufacturer: "",
+            cigarWrapper: "",
+            qrCode: "",
+            brandId: "",
+            productDescription: "",
+        },
     });
 
     useEffect(() => {
@@ -153,14 +169,14 @@ export default function ProductUploadForm({ params }: any) {
                                 placeholder="Enter cigar title"
                                 {...register("cigarName")}
                                 className={`${
-                                    (errors?.cigarName as string)
+                                    errors?.cigarName
                                         ? "border-red-500 ring-red-500"
                                         : ""
                                 }`}
                             />
                             {errors?.cigarName && (
                                 <p className="text-red-500">
-                                    {errors.cigarName.message as string}
+                                    {errors.cigarName.message}
                                 </p>
                             )}
                         </div>
@@ -178,7 +194,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.brandId && (
                                 <p className="text-red-500">
-                                    {errors.brandId.message as string}
+                                    {errors.brandId.message}
                                 </p>
                             )}
                         </div>
@@ -196,7 +212,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.qrCode && (
                                 <p className="text-red-500">
-                                    {errors?.qrCode.message as string}
+                                    {errors?.qrCode.message}
                                 </p>
                             )}
                         </div>
@@ -227,7 +243,7 @@ export default function ProductUploadForm({ params }: any) {
                                 />
                                 {errors?.cigarImage && (
                                     <p className="text-red-500">
-                                        {errors.cigarImage.message as string}
+                                        {errors.cigarImage.message}
                                     </p>
                                 )}
                                 {/* <div className="flex items-center gap-2">
@@ -308,7 +324,7 @@ export default function ProductUploadForm({ params }: any) {
                                 </div>
                                 {errors?.gallery && (
                                     <p className="text-red-500">
-                                        {errors.gallery.message as string}
+                                        {errors.gallery.message }
                                     </p>
                                 )}
                                 <div className="mt-2 grid gap-2">
@@ -369,7 +385,7 @@ export default function ProductUploadForm({ params }: any) {
                                 onValueChange={(value) =>
                                     setValue("cigarShape", value)
                                 }
-                                defaultValue={watch("cigarShape")}
+                                value={watch("cigarShape")}
                             >
                                 <SelectTrigger id="cigarShape">
                                     <SelectValue placeholder="Select shape" />
@@ -391,7 +407,7 @@ export default function ProductUploadForm({ params }: any) {
                             </Select>
                             {errors?.cigarShape && (
                                 <p className="text-red-500">
-                                    {errors.cigarShape.message as string}
+                                    {errors.cigarShape.message}
                                 </p>
                             )}
                         </div>
@@ -409,7 +425,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.cigarSection && (
                                 <p className="text-red-500">
-                                    {errors.cigarSection.message as string}
+                                    {errors.cigarSection.message}
                                 </p>
                             )}
                         </div>
@@ -433,7 +449,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.cigarLength && (
                                 <p className="text-red-500">
-                                    {errors.cigarLength.message as string}
+                                    {errors.cigarLength.message}
                                 </p>
                             )}
                         </div>
@@ -453,7 +469,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.origin && (
                                 <p className="text-red-500">
-                                    {errors.origin.message as string}
+                                    {errors.origin.message}
                                 </p>
                             )}
                         </div>
@@ -476,7 +492,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.cigarRingGauge && (
                                 <p className="text-red-500">
-                                    {errors.cigarRingGauge.message as string}
+                                    {errors.cigarRingGauge.message}
                                 </p>
                             )}
                         </div>
@@ -501,7 +517,7 @@ export default function ProductUploadForm({ params }: any) {
                             </Select>
                             {errors?.strength && (
                                 <p className="text-red-500">
-                                    {errors.strength.message as string}
+                                    {errors.strength.message}
                                 </p>
                             )}
                         </div>
@@ -521,7 +537,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.wrapperColor && (
                                 <p className="text-red-500">
-                                    {errors.wrapperColor.message as string}
+                                    {errors.wrapperColor.message}
                                 </p>
                             )}
                         </div>
@@ -539,7 +555,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.rollingType && (
                                 <p className="text-red-500">
-                                    {errors.rollingType.message as string}
+                                    {errors.rollingType.message}
                                 </p>
                             )}
                         </div>
@@ -559,7 +575,7 @@ export default function ProductUploadForm({ params }: any) {
                             />
                             {errors?.cigarManufacturer && (
                                 <p className="text-red-500">
-                                    {errors.cigarManufacturer.message as string}
+                                    {errors.cigarManufacturer.message}
                                 </p>
                             )}
                         </div>
@@ -578,7 +594,7 @@ export default function ProductUploadForm({ params }: any) {
                         />
                         {errors?.cigarWrapper && (
                             <p className="text-red-500">
-                                {errors.cigarWrapper.message as string}
+                                {errors?.cigarWrapper.message}
                             </p>
                         )}
                     </div>
