@@ -80,21 +80,22 @@ const ProductsTable = () => {
     }, [sortStatus]);
 
     const deleteRow = async (id: any) => {
-        const res = await deleteCigar(id).unwrap();
+        const toastID = toast.loading("Deleting Product");
 
         try {
+            const res = await deleteCigar(id).unwrap();
             if (res?.success) {
                 const updatedItems = items.filter((item) => item.id !== id);
                 setItems(updatedItems);
                 setInitialRecords(updatedItems);
                 setRecords(updatedItems);
                 setSearch("");
-                toast.success("Cigar deleted successfully");
+                toast.success("Cigar deleted successfully", { id: toastID });
             } else {
-                toast.error("Failed to delete cigar");
+                toast.error("Failed to delete cigar", { id: toastID });
             }
         } catch (error: any) {
-            toast.error(error?.data?.message);
+            toast.error(error?.data?.message, { id: toastID });
         }
     };
 

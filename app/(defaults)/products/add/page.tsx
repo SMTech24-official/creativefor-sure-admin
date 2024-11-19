@@ -335,33 +335,19 @@ export default function ProductUploadForm() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="space-y-2">
                             <Label htmlFor="cigarShape">Cigar Shape</Label>
-                            <Select
-                                onValueChange={(value) =>
-                                    setValue("cigarShape", value)
-                                }
-                                defaultValue={watch("cigarShape")}
-                            >
-                                <SelectTrigger id="cigarShape">
-                                    <SelectValue placeholder="Select shape" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="parejo">
-                                        Parejo
-                                    </SelectItem>
-                                    <SelectItem value="figurado">
-                                        Figurado
-                                    </SelectItem>
-                                    <SelectItem value="torpedo">
-                                        Torpedo
-                                    </SelectItem>
-                                    <SelectItem value="robusto">
-                                        Robusto
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Input
+                                id="cigarShape"
+                                placeholder="Enter section"
+                                {...register("cigarShape")}
+                                className={`${
+                                    errors?.cigarShape
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
                             {errors?.cigarShape && (
                                 <p className="text-red-500">
-                                    {errors.cigarShape.message as string}
+                                    {errors?.cigarShape?.message as string}
                                 </p>
                             )}
                         </div>
@@ -452,26 +438,19 @@ export default function ProductUploadForm() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="strength">Strength</Label>
-                            <Select
-                                onValueChange={(value) =>
-                                    setValue("strength", value)
-                                }
-                                defaultValue={watch("strength")}
-                            >
-                                <SelectTrigger id="strength">
-                                    <SelectValue placeholder="Select strength" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="mild">Mild</SelectItem>
-                                    <SelectItem value="medium">
-                                        Medium
-                                    </SelectItem>
-                                    <SelectItem value="full">Full</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Input
+                                id="strength"
+                                placeholder="Enter wrapper color"
+                                {...register("strength")}
+                                className={`${
+                                    errors?.strength
+                                        ? "border-red-500 ring-red-500"
+                                        : ""
+                                }`}
+                            />
                             {errors?.strength && (
                                 <p className="text-red-500">
-                                    {errors.strength.message as string}
+                                    {errors?.strength?.message as string}
                                 </p>
                             )}
                         </div>

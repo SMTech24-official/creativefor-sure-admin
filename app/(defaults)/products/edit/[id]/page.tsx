@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+// import {
+//     Select,
+//     SelectContent,
+//     SelectItem,
+//     SelectTrigger,
+//     SelectValue,
+// } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { UploadIcon } from "@/components/icon/UploadIcon";
@@ -84,7 +84,7 @@ export default function ProductUploadForm({ params }: any) {
         register,
         handleSubmit,
         setValue,
-        watch,
+        // watch,
         reset,
         formState: { errors },
     } = useForm({
@@ -146,7 +146,6 @@ export default function ProductUploadForm({ params }: any) {
                     duration: 3000,
                     id: toastID,
                 });
-                router.push("/products/list");
             }
         } catch (error: any) {
             toast.error(error?.data?.message, {
