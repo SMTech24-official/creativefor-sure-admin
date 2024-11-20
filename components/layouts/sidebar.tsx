@@ -34,6 +34,7 @@ import IconMenuDocumentation from "@/components/icon/menu/icon-menu-documentatio
 import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconShoppingBag from "../icon/icon-shopping-bag";
+import IconShoppingCart from "../icon/icon-shopping-cart";
 
 const Sidebar = () => {
     const dispatch = useDispatch();
@@ -169,7 +170,7 @@ const Sidebar = () => {
                                     onClick={() => toggleMenu("Products")}
                                 >
                                     <div className="flex items-center">
-                                        <IconShoppingBag className="shrink-0 group-hover:!text-primary" />
+                                        <IconShoppingCart className="shrink-0 group-hover:!text-primary" />
                                         <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
                                             {t("Products")}
                                         </span>
