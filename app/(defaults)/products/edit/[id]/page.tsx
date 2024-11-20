@@ -41,6 +41,7 @@ export default function ProductUploadForm({ params }: any) {
         params?.id
     );
     const [description, setDescription] = useState("");
+    // console.log(cigarBrands?.data, cigarData?.data);
     // const [file, setFile] = useState<File | null>(null);
     // const [filePreview, setFilePreview] = useState<string | null>(null);
     // const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,28 +112,28 @@ export default function ProductUploadForm({ params }: any) {
     });
 
     useEffect(() => {
-        if (cigarData?.data) {
+        if (!!cigarData?.data) {
             reset({
-                cigarName: cigarData.data.cigarName,
-                cigarImage: cigarData.data.cigarImage,
-                cigarShape: cigarData.data.cigarShape,
-                cigarSection: cigarData.data.cigarSection,
-                cigarLength: cigarData.data.cigarLength,
-                origin: cigarData.data.origin,
-                cigarRingGauge: cigarData.data.cigarRingGauge,
-                strength: cigarData.data.strength,
-                wrapperColor: cigarData.data.wrapperColor,
-                rollingType: cigarData.data.rollingType,
-                cigarManufacturer: cigarData.data.cigarManufacturer,
-                cigarWrapper: cigarData.data.cigarWrapper,
-                qrCode: cigarData.data.qrCode,
-                brandId: cigarData.data.brandId,
+                cigarName: cigarData?.data?.cigarName,
+                cigarImage: cigarData?.data?.cigarImage,
+                cigarShape: cigarData?.data?.cigarShape,
+                cigarSection: cigarData?.data?.cigarSection,
+                cigarLength: cigarData?.data?.cigarLength,
+                origin: cigarData?.data?.origin,
+                cigarRingGauge: cigarData?.data?.cigarRingGauge,
+                strength: cigarData?.data?.strength,
+                wrapperColor: cigarData?.data?.wrapperColor,
+                rollingType: cigarData?.data?.rollingType,
+                cigarManufacturer: cigarData?.data?.cigarManufacturer,
+                cigarWrapper: cigarData?.data?.cigarWrapper,
+                qrCode: cigarData?.data?.qrCode,
+                brandId: cigarData?.data?.brandId,
                 productDescription: `${setDescription(
-                    cigarData.data.productDescription ?? ""
+                    cigarData?.data?.productDescription ?? ""
                 )}`,
             });
         }
-    }, [cigarData, reset]);
+    }, [cigarData?.data, reset]);
 
     const handleDescriptionChange = (value: string) => {
         setDescription(value);
@@ -156,6 +157,28 @@ export default function ProductUploadForm({ params }: any) {
             });
         }
     };
+
+    const brandValue = (id: any) => {
+        // get brand name by matching brand id
+        // console.log(cigarBrands?.data);
+
+        // [
+        //     {
+        //         "id": "673c27dbebade931addb435d",
+        //         "name": "Belal Brand"
+        //     },
+        //     {
+        //         "id": "673c2a621770e927c9409f23",
+        //         "name": "Belal dev Brand"
+        //     }
+        // ]\
+
+        // console.log(cigarBrands?.data, cigarData?.data?.id);
+        const brand = cigarBrands?.data?.find((brand: any) => brand.id === id);
+        return brand?.name;
+    };
+
+    // console.log(brandValue());
 
     return (
         <>
@@ -195,31 +218,24 @@ export default function ProductUploadForm({ params }: any) {
                                         onValueChange={(value) =>
                                             setValue("brandId", value)
                                         }
-                                        defaultValue={watch("brandId")}
+                                        value={
+                                            watch("brandId") ??
+                                            brandValue(cigarData?.data?.brandId)
+                                        }
                                     >
                                         <SelectTrigger id="brandId">
                                             <SelectValue placeholder="Select Brand" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {isLoadingCigarBrand ? (
-                                                <SelectItem value="Loading">
-                                                    Loading Brands
-                                                </SelectItem>
-                                            ) : cigarBrands?.success ? (
-                                                cigarBrands?.data?.map(
-                                                    (brand: any) => (
-                                                        <SelectItem
-                                                            key={brand?.id}
-                                                            value={brand?.id}
-                                                        >
-                                                            {brand?.name}
-                                                        </SelectItem>
-                                                    )
+                                            {cigarBrands?.data?.map(
+                                                (brand: any) => (
+                                                    <SelectItem
+                                                        key={brand?.id}
+                                                        value={brand?.id}
+                                                    >
+                                                        {brand?.name}
+                                                    </SelectItem>
                                                 )
-                                            ) : (
-                                                <SelectItem value="Not Selected">
-                                                    No Brands Available
-                                                </SelectItem>
                                             )}
                                         </SelectContent>
                                     </Select>
