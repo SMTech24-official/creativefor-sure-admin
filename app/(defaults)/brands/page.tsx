@@ -1,5 +1,7 @@
-const BrandsTable = () => {
-    return <div>page</div>;
+"use client";
+
+const AllBrands = () => {
+    return <div>AllBrands</div>;
 };
 
-export default BrandsTable;
+export default AllBrands;
