@@ -8,6 +8,7 @@ import IconEdit from "@/components/icon/icon-edit";
 // import IconPlus from "@/components/icon/icon-plus";
 import IconTrashLines from "@/components/icon/icon-trash-lines";
 import {
+    useCreateBrandMutation,
     useDeleteBrandMutation,
     useGetAllBrandsQuery,
 } from "@/store/api/brands/brandsApi";
@@ -31,20 +32,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 const BrandsTable: React.FC = () => {
+    const [createBrand, { isLoading: isCreatingBrand }] =
+        useCreateBrandMutation();
+    const [deleteBrand, { isLoading: isDeletingBrands }] =
+        useDeleteBrandMutation();
     const { data: brands, isLoading: isLoadingBrands } = useGetAllBrandsQuery(
         []
     );
-    const [deleteBrand, { isLoading: isDeletingBrands }] =
-        useDeleteBrandMutation();
-
-    // brands form zod validation
-    const form = useForm<BrandNameFormValues>({
-        resolver: zodResolver(brandNameSchema),
-        defaultValues: {
-            brandName: "",
-        },
-    });
-
     const [page, setPage] = useState<number>(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -56,6 +50,15 @@ const BrandsTable: React.FC = () => {
         direction: "asc",
     });
 
+    // brands form zod validation
+    const form = useForm<BrandNameFormValues>({
+        resolver: zodResolver(brandNameSchema),
+        defaultValues: {
+            brandName: "",
+        },
+    });
+
+    // sort brands by name
     useEffect(() => {
         if (brands?.data) {
             const sortedBrands = sortBy(brands.data, "name");
@@ -64,12 +67,14 @@ const BrandsTable: React.FC = () => {
         }
     }, [brands, pageSize]);
 
+    // table page
     useEffect(() => {
         const from = (page - 1) * pageSize;
         const to = from + pageSize;
         setRecords([...initialRecords.slice(from, to)]);
     }, [page, pageSize, initialRecords]);
 
+    // search brands
     useEffect(() => {
         if (brands?.data) {
             const filteredBrands = brands.data.filter((brand: Brand) =>
@@ -79,6 +84,7 @@ const BrandsTable: React.FC = () => {
         }
     }, [search, brands]);
 
+    // sort records
     useEffect(() => {
         const sortedRecords = sortBy(initialRecords, sortStatus.columnAccessor);
         setRecords(
@@ -89,10 +95,26 @@ const BrandsTable: React.FC = () => {
         setPage(1);
     }, [sortStatus, initialRecords]);
 
-    const onSubmit = (data: BrandNameFormValues) => {
-        console.log(data);
+    // create brand
+    const onSubmit = async (data: BrandNameFormValues) => {
+        const toastID = toast.loading("Creating Brand");
+        try {
+            const res = await createBrand(data).unwrap();
+            if (res?.success) {
+                toast.success("Brand created successfully", { id: toastID });
+                const updatedRecords = [...initialRecords, res.data];
+                setInitialRecords(updatedRecords);
+                setRecords(updatedRecords.slice(0, pageSize));
+                form.reset();
+            } else {
+                toast.error("Failed to create brand", { id: toastID });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message, { id: toastID });
+        }
     };
 
+    // delete brand
     const deleteRow = async (id: string) => {
         const toastID = toast.loading("Deleting Brand");
         try {
@@ -136,8 +158,12 @@ const BrandsTable: React.FC = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="mt-4">
-                            Submit
+                        <Button
+                            type="submit"
+                            className="mt-4 bg-[#4361ee]"
+                            disabled={isCreatingBrand}
+                        >
+                            {isCreatingBrand ? "Creating brand..." : "Submit"}
                         </Button>
                     </form>
                 </Form>
