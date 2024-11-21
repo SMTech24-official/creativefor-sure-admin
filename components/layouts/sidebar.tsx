@@ -248,11 +248,6 @@ const Sidebar = () => {
                                                 {t("All brands")}
                                             </Link>
                                         </li>
-                                        <li>
-                                            <Link href="/brands/add">
-                                                {t("add")}
-                                            </Link>
-                                        </li>
                                         {/* <li>
                                             <Link href="/apps/invoice/edit">{t('edit')}</Link>
                                         </li> */}
