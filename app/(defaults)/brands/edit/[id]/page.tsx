@@ -21,16 +21,18 @@ import {
     useGetBrandQuery,
     useUpdateBrandMutation,
 } from "@/store/api/brands/brandsApi";
+import { useEffect } from "react";
 
-const updateBrandForm = ({ params }: any) => {
+const UpdateBrandForm = ({ params }: any) => {
     const [updateBrand, { isLoading: isUpdatingBrand }] =
         useUpdateBrandMutation();
     const { data: brand, isLoading: isLoadingBrand } = useGetBrandQuery(
         params?.id
     );
+
     console.log(brand);
 
-    // brands form zod validation
+    // Initialize form with Zod validation
     const form = useForm<BrandNameFormValues>({
         resolver: zodResolver(brandNameSchema),
         defaultValues: {
@@ -38,10 +40,42 @@ const updateBrandForm = ({ params }: any) => {
         },
     });
 
-    // create brand
+    // Sync form values when brand data is fetched
+    useEffect(() => {
+        if (brand?.data?.brandName) {
+            form.reset({
+                brandName: brand?.data?.brandName,
+            });
+        }
+    }, [brand, form]);
+
+    // Handle form submission
     const onSubmit = async (data: BrandNameFormValues) => {
-        console.log(data);
+        const toastID = toast.loading("Updating Brand...");
+        try {
+            const res = await updateBrand({
+                data: data,
+                id: params?.id,
+            }).unwrap();
+            if (res?.success) {
+                toast.success("Brand updated successfully", {
+                    duration: 3000,
+                    id: toastID,
+                });
+            } else {
+                toast.error(res?.message, {
+                    duration: 3000,
+                    id: toastID,
+                });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "An error occurred", {
+                duration: 3000,
+                id: toastID,
+            });
+        }
     };
+
     return (
         <div className="panel border-white-light p-5 dark:border-[#1b2e4b]">
             {isLoadingBrand ? (
@@ -62,15 +96,18 @@ const updateBrandForm = ({ params }: any) => {
                                         <Input
                                             placeholder="Enter your brand name"
                                             {...field}
-                                            value={brand?.data?.brandName}
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="mt-4 bg-[#4361ee]">
-                            Update
+                        <Button
+                            type="submit"
+                            className="mt-4 bg-[#4361ee]"
+                            disabled={isUpdatingBrand}
+                        >
+                            {isUpdatingBrand ? "Updating..." : "Update"}
                         </Button>
                     </form>
                 </Form>
@@ -79,4 +116,4 @@ const updateBrandForm = ({ params }: any) => {
     );
 };
 
-export default updateBrandForm;
+export default UpdateBrandForm;

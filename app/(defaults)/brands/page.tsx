@@ -135,7 +135,7 @@ const BrandsTable: React.FC = () => {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 items-start gap-6">
             <div className="panel border-white-light p-5 dark:border-[#1b2e4b]">
                 <Form {...form}>
                     <form
