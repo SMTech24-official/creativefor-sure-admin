@@ -35,6 +35,7 @@ import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconShoppingBag from "../icon/icon-shopping-bag";
 import IconShoppingCart from "../icon/icon-shopping-cart";
+import IconUser from "../icon/icon-user";
 
 const Sidebar = () => {
     const dispatch = useDispatch();
@@ -210,6 +211,7 @@ const Sidebar = () => {
                                     </ul>
                                 </AnimateHeight>
                             </li>
+
                             <li className="menu nav-item">
                                 <button
                                     type="button"
@@ -221,7 +223,7 @@ const Sidebar = () => {
                                     <div className="flex items-center">
                                         <IconShoppingBag className="shrink-0 group-hover:!text-primary" />
                                         <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
-                                            {t("brands")}
+                                            {t("Brands")}
                                         </span>
                                     </div>
 
@@ -248,9 +250,45 @@ const Sidebar = () => {
                                                 {t("All brands")}
                                             </Link>
                                         </li>
-                                        {/* <li>
-                                            <Link href="/apps/invoice/edit">{t('edit')}</Link>
-                                        </li> */}
+                                    </ul>
+                                </AnimateHeight>
+                            </li>
+                            <li className="menu nav-item">
+                                <button
+                                    type="button"
+                                    className={`${
+                                        currentMenu === "user" ? "active" : ""
+                                    } nav-link group w-full`}
+                                    onClick={() => toggleMenu("user")}
+                                >
+                                    <div className="flex items-center">
+                                        <IconUser className="shrink-0 group-hover:!text-primary" />
+                                        <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                            {t("User")}
+                                        </span>
+                                    </div>
+
+                                    <div
+                                        className={
+                                            currentMenu !== "user"
+                                                ? "-rotate-90 rtl:rotate-90"
+                                                : ""
+                                        }
+                                    >
+                                        <IconCaretDown />
+                                    </div>
+                                </button>
+
+                                <AnimateHeight
+                                    duration={300}
+                                    height={currentMenu === "user" ? "auto" : 0}
+                                >
+                                    <ul className="sub-menu text-gray-500">
+                                        <li>
+                                            <Link href="/user/">
+                                                {t("All user")}
+                                            </Link>
+                                        </li>
                                     </ul>
                                 </AnimateHeight>
                             </li>
