@@ -39,6 +39,7 @@ const BrandsTable: React.FC = () => {
     const { data: brands, isLoading: isLoadingBrands } = useGetAllBrandsQuery(
         []
     );
+    console.log(brands);
     const [page, setPage] = useState<number>(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);

@@ -38,16 +38,18 @@ const ProductsTable = () => {
     // Fetch and format data from the API
     useEffect(() => {
         if (cigarData?.data) {
-            const formattedData: Cigar[] = cigarData.data.map((cigar: any) => ({
-                id: cigar?.id,
-                cigarName: cigar?.cigarName,
-                cigarImage: cigar?.cigarImage,
-                cigarLength: cigar?.cigarLength,
-                cigarRingGauge: cigar?.cigarRingGauge,
-                strength: cigar?.strength,
-                wrapperColor: cigar?.wrapperColor,
-                createdAt: new Date(cigar?.createdAt).toLocaleDateString(),
-            }));
+            const formattedData: Cigar[] = cigarData?.data?.data?.map(
+                (cigar: any) => ({
+                    id: cigar?.id,
+                    cigarName: cigar?.cigarName,
+                    cigarImage: cigar?.cigarImage,
+                    cigarLength: cigar?.cigarLength,
+                    cigarRingGauge: cigar?.cigarRingGauge,
+                    strength: cigar?.strength,
+                    wrapperColor: cigar?.wrapperColor,
+                    createdAt: new Date(cigar?.createdAt).toLocaleDateString(),
+                })
+            );
             setItems(formattedData);
             setInitialRecords(sortBy(formattedData, "cigarName"));
         }
