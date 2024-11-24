@@ -8,8 +8,6 @@ import { toggleSidebar } from "@/store/themeConfigSlice";
 import Dropdown from "@/components/dropdown";
 import IconMenu from "@/components/icon/icon-menu";
 import IconUser from "@/components/icon/icon-user";
-import IconMail from "@/components/icon/icon-mail";
-import IconLockDots from "@/components/icon/icon-lock-dots";
 import IconLogout from "@/components/icon/icon-logout";
 import IconMenuDashboard from "@/components/icon/menu/icon-menu-dashboard";
 import IconCaretDown from "@/components/icon/icon-caret-down";
@@ -23,8 +21,10 @@ import IconMenuMore from "@/components/icon/menu/icon-menu-more";
 import { usePathname, useRouter } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import { logoutUser } from "@/service/actions/logoutUser";
+import { useGetUserQuery } from "@/store/api/auth/authApi";
 
 const Header = () => {
+    const { data: userInfo, isLoading: isLoadingUser } = useGetUserQuery([]);
     const pathname = usePathname();
     const dispatch = useDispatch();
     const router = useRouter();
@@ -123,23 +123,20 @@ const Header = () => {
                                 <ul className="w-[230px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     <li>
                                         <div className="flex items-center px-4 py-4">
-                                            <img
-                                                className="h-10 w-10 rounded-md object-cover"
-                                                src="/assets/images/user-profile.jpeg"
-                                                alt="userProfile"
-                                            />
-                                            <div className="truncate ltr:pl-4 rtl:pr-4">
+                                            <div className="truncate">
                                                 <h4 className="text-base">
-                                                    John Doe
-                                                    <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">
-                                                        Pro
-                                                    </span>
+                                                    {userInfo?.data
+                                                        ?.firstName ||
+                                                        "N/A"}{" "}
+                                                    {userInfo?.data?.lastName ||
+                                                        "N/A"}
                                                 </h4>
                                                 <button
                                                     type="button"
                                                     className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white"
                                                 >
-                                                    johndoe@gmail.com
+                                                    {userInfo?.data?.email ||
+                                                        "N/A"}
                                                 </button>
                                             </div>
                                         </div>

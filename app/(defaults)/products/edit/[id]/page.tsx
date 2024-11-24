@@ -158,28 +158,6 @@ export default function ProductUploadForm({ params }: any) {
         }
     };
 
-    const brandValue = (id: any) => {
-        // get brand name by matching brand id
-        // console.log(cigarBrands?.data);
-
-        // [
-        //     {
-        //         "id": "673c27dbebade931addb435d",
-        //         "name": "Belal Brand"
-        //     },
-        //     {
-        //         "id": "673c2a621770e927c9409f23",
-        //         "name": "Belal dev Brand"
-        //     }
-        // ]\
-
-        // console.log(cigarBrands?.data, cigarData?.data?.id);
-        const brand = cigarBrands?.data?.find((brand: any) => brand.id === id);
-        return brand?.name;
-    };
-
-    // console.log(brandValue());
-
     return (
         <>
             {isLoadingCigarData ? (
@@ -218,10 +196,7 @@ export default function ProductUploadForm({ params }: any) {
                                         onValueChange={(value) =>
                                             setValue("brandId", value)
                                         }
-                                        value={
-                                            watch("brandId") ??
-                                            brandValue(cigarData?.data?.brandId)
-                                        }
+                                        defaultValue={cigarData?.data?.brandId}
                                     >
                                         <SelectTrigger id="brandId">
                                             <SelectValue placeholder="Select Brand" />
