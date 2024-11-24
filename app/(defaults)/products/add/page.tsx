@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), {
+    ssr: false,
+});
 import "react-quill/dist/quill.snow.css";
 import {
     Select,
@@ -26,8 +29,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateCigarMutation } from "@/store/api/cigar/cigarApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import ProductSchema from "./ProductSchema";
 import { useGetAllBrandsQuery } from "@/store/api/brands/brandsApi";
+import ProductSchema from "../../../../schema/ProductSchema";
 
 export default function ProductUploadForm() {
     const router = useRouter();

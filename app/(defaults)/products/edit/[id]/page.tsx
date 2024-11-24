@@ -29,8 +29,8 @@ import {
 } from "@/store/api/cigar/cigarApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import ProductSchema from "../../add/ProductSchema";
 import { useGetAllBrandsQuery } from "@/store/api/brands/brandsApi";
+import ProductSchema from "../../../../../schema/ProductSchema";
 
 export default function ProductUploadForm({ params }: any) {
     const { data: cigarBrands, isLoading: isLoadingCigarBrand } =
