@@ -1,4 +1,4 @@
-import { baseApi } from '../baseApi';
+import { baseApi } from "../baseApi";
 
 type TQueryParam = {
     name: string;
@@ -10,14 +10,28 @@ const authApi = baseApi.injectEndpoints({
         login: builder.mutation({
             query: (data) => {
                 return {
-                    url: '/auth/login',
-                    method: 'POST',
+                    url: "/auth/login",
+                    method: "POST",
                     body: data,
                 };
             },
-            invalidatesTags: ['Auth'],
+            invalidatesTags: ["Auth"],
+        }),
+        getUser: builder.query({
+            query: () => ({
+                url: `/auth/get-me`,
+                method: "GET",
+            }),
+        }),
+        updateUser: builder.mutation({
+            query: (data) => ({
+                url: `/users/profile`,
+                method: "PUT",
+                body: data,
+            }),
         }),
     }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useGetUserQuery, useUpdateUserMutation } =
+    authApi;
