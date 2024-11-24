@@ -1,10 +1,10 @@
-import ComponentsUsersAccountSettingsTabs from '@/components/users/account-settings/components-users-account-settings-tabs';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import React from 'react';
+import ComponentsUsersAccountSettingsTabs from "@/components/users/account-settings/components-users-account-settings-tabs";
+import { Metadata } from "next";
+import Link from "next/link";
+import React from "react";
 
 export const metadata: Metadata = {
-    title: 'Account Setting',
+    title: "Account Setting",
 };
 
 const UserAccountSettings = () => {
