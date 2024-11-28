@@ -205,6 +205,11 @@ const Sidebar = () => {
                                                 {t("add")}
                                             </Link>
                                         </li>
+                                        <li>
+                                            <Link href="/products/addCsv">
+                                                {t("Add CSV")}
+                                            </Link>
+                                        </li>
                                         {/* <li>
                                             <Link href="/apps/invoice/edit">{t('edit')}</Link>
                                         </li> */}
