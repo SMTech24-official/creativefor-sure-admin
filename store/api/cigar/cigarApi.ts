@@ -43,6 +43,21 @@ const cigarApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["Cigars"],
         }),
+        postCSV: build.mutation({
+            query: (data: any) => ({
+                url: `/cigarData/csv-upload`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["Cigars"],
+        }),
+        downloadMissingField: build.query({
+            query: () => ({
+                url: `/cigarData/download-missing-fields`,
+                method: "GET",
+            }),
+            providesTags: ["Cigars"],
+        }),
     }),
 });
 
@@ -52,4 +67,6 @@ export const {
     useUpdateCigarMutation,
     useGetCigarQuery,
     useDeleteCigarMutation,
+    usePostCSVMutation,
+    useDownloadMissingFieldQuery
 } = cigarApi;
