@@ -187,7 +187,7 @@ const Sidebar = () => {
                                 >
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <Link href="/products/list">
+                                            <Link href="/">
                                                 {t("All Products")}
                                             </Link>
                                         </li>
