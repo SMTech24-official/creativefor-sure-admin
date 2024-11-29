@@ -167,7 +167,7 @@ export default function CSVUploaderPage() {
 
     return (
         <div className="bg-background flex min-h-[70vh] items-center justify-center ">
-            <div className="max-w-2xl w-full">
+            <div className="lg:max-w-2xl w-full md:max-w-xl sm:max-w-md max-w-[270px]">
                 <div>
                     <h1 className="mb-6 text-2xl font-bold">Upload CSV</h1>
                     <div
@@ -255,8 +255,8 @@ export default function CSVUploaderPage() {
                 {/* error  */}
                 <div className="">
                     {
-                        errorText && <div className="p-4 mt-4 rounded-lg gap-2 bg-red-100 flex flex-col items-center justify-center">
-                            <p>{errorText}</p>
+                        errorText && <div className="p-4 mt-4 rounded-lg gap-2 bg-red-100 flex flex-col items-center justify-center text-wrap overflow-hidden">
+                            <p className="lg:max-w-2xl w-full md:max-w-xl sm:max-w-md max-w-[270px] text-wrap">{errorText}</p>
                             {
                                 failError && <button onClick={() => handleDownloadError()} className="bg-red-600 text-white py-2 px-8 rounded-lg ">
                                     Download Missing Fields

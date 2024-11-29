@@ -74,11 +74,10 @@ const Header = () => {
 
     return (
         <header
-            className={`z-40 ${
-                themeConfig.semidark && themeConfig.menu === "horizontal"
+            className={`z-40 ${themeConfig.semidark && themeConfig.menu === "horizontal"
                     ? "dark"
                     : ""
-            }`}
+                }`}
         >
             <div className="shadow-sm">
                 <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
@@ -87,14 +86,7 @@ const Header = () => {
                             href="/"
                             className="main-logo flex shrink-0 items-center"
                         >
-                            <img
-                                className="inline w-8 ltr:-ml-1 rtl:-mr-1"
-                                src="/assets/images/logo.svg"
-                                alt="logo"
-                            />
-                            <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 dark:text-white-light md:inline ltr:ml-1.5 rtl:mr-1.5">
-                                VRISTO
-                            </span>
+                            <p className="uppercase text-[#c8e394] font-semibold text-lg">CreativeforSure</p>
                         </Link>
                         <button
                             type="button"
@@ -108,9 +100,8 @@ const Header = () => {
                         <div className="dropdown flex shrink-0">
                             <Dropdown
                                 offset={[0, 8]}
-                                placement={`${
-                                    isRtl ? "bottom-start" : "bottom-end"
-                                }`}
+                                placement={`${isRtl ? "bottom-start" : "bottom-end"
+                                    }`}
                                 btnClassName="relative group block"
                                 button={
                                     <img
