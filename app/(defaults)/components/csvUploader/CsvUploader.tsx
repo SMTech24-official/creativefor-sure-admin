@@ -48,6 +48,7 @@ export default function CSVUploaderPage() {
 
     const [failError, setFailError] = useState(false)
     const [errorText, setErrorText] = useState(null)
+    const [download, setDownload] = useState(null)
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -87,25 +88,44 @@ export default function CSVUploaderPage() {
     };
 
     const [postCSV, { isLoading }] = usePostCSVMutation()
-    const { data } = useDownloadMissingFieldQuery(undefined)
+    // const { data: errorData, isLoading: isLoading2 } = useDownloadMissingFieldQuery(undefined)
+    // console.log(data);
 
-    const handleDownloadError = () => {
-        if (data) {
-            console.log("Missing Data: ", data);
-            // Assuming 'data' contains the missing fields
-            // You can trigger the download logic, like creating a CSV, triggering a download link, or any other method
-            const missingData = data; // Replace with actual structure of 'data'
 
-            // Example: If 'data' is a CSV, you can trigger a download
-            const blob = new Blob([missingData], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "missing_data.csv";
+
+    const handleDownloadError = async () => {
+        try {
+            // Fetch data (replace the URL with your actual endpoint)
+            const response = await fetch('http://localhost:3000/api/v1/cigarData/download-missing-fields');
+            console.log(response);
+            const data = await response.text()
+            console.log(data);
+            // Create a Blob from the data (you can change the MIME type accordingly, e.g. text/csv)
+            const blob = new Blob([data], { type: 'text/plain' }); // Change 'text/plain' based on your data type
+
+            // Create a temporary link element
+            const link = document.createElement('a');
+
+            // Create an object URL for the Blob
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+
+            // Set the download attribute with a filename (optional)
+            link.download = 'downloaded_data.txt'; // Change file name and extension based on your data
+
+            // Programmatically click the link to trigger the download
             link.click();
-        } else {
-            console.log("No missing data available.");
+
+            // Clean up the URL object after download
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            alert('An error occurred while fetching the data. Please try again later.');
         }
     };
+
+
     const handleUpload = async () => {
         // Create FormData instance
         const formData = new FormData();
@@ -115,8 +135,6 @@ export default function CSVUploaderPage() {
 
         // Check if the file exists
         if (FileData) {
-            console.log(FileData); // Log the file to check it's being accessed correctly
-
             // Append the file to FormData
             formData.append("file", FileData);
 
@@ -131,7 +149,6 @@ export default function CSVUploaderPage() {
                 toast.error(res?.data?.message)
                 setErrorText(res?.data?.message)
                 setFailError(true)
-                handleDownloadError()
             }
 
         } else {
@@ -139,11 +156,7 @@ export default function CSVUploaderPage() {
         }
     };
 
- 
-    const handleDownloadError2 = () => {
-        console.log("error");
-        console.log(data);
-    }
+
     return (
         <div className="bg-background flex min-h-[70vh] items-center justify-center ">
             <div className="w-[700px] rounded-md border p-5 shadow-md sm:p-6 md:h-[600px] md:p-7 xl:p-10">
@@ -232,8 +245,8 @@ export default function CSVUploaderPage() {
                     {
                         failError && <div className="p-4 mt-4 rounded-lg gap-2 bg-red-100 flex flex-col items-center justify-center">
                             <p>{errorText}</p>
-                            <button onClick={() => handleDownloadError2()} className="bg-red-600 text-white py-2 px-8 rounded-lg ">
-                                Download
+                            <button onClick={() => handleDownloadError()} className="bg-red-600 text-white py-2 px-8 rounded-lg ">
+                                Download Missing Fields
                             </button>
                         </div>
                     }
