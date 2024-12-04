@@ -5,7 +5,6 @@ import {
     brandNameSchema,
 } from "@/components/brands/BrandsSchema";
 import IconEdit from "@/components/icon/icon-edit";
-// import IconPlus from "@/components/icon/icon-plus";
 import IconTrashLines from "@/components/icon/icon-trash-lines";
 import {
     useCreateBrandMutation,
