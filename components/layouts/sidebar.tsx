@@ -95,9 +95,8 @@ const Sidebar = () => {
     return (
         <div className={semidark ? "dark" : ""}>
             <nav
-                className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
-                    semidark ? "text-white-dark" : ""
-                }`}
+                className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${semidark ? "text-white-dark" : ""
+                    }`}
             >
                 <div className="h-full bg-white dark:bg-black">
                     <div className="flex items-center justify-between px-4 py-3">
@@ -105,14 +104,7 @@ const Sidebar = () => {
                             href="/"
                             className="main-logo flex shrink-0 items-center"
                         >
-                            <img
-                                className="ml-[5px] w-8 flex-none"
-                                src="/assets/images/logo.svg"
-                                alt="logo"
-                            />
-                            <span className="align-middle text-2xl font-semibold dark:text-white-light lg:inline ltr:ml-1.5 rtl:mr-1.5">
-                                VRISTO
-                            </span>
+                            <p className="uppercase text-[#c8e394] font-medium text-lg">CreativeforSure</p>
                         </Link>
 
                         <button
@@ -163,11 +155,10 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button
                                     type="button"
-                                    className={`${
-                                        currentMenu === "Products"
+                                    className={`${currentMenu === "Products"
                                             ? "active"
                                             : ""
-                                    } nav-link group w-full`}
+                                        } nav-link group w-full`}
                                     onClick={() => toggleMenu("Products")}
                                 >
                                     <div className="flex items-center">
@@ -196,7 +187,7 @@ const Sidebar = () => {
                                 >
                                     <ul className="sub-menu text-gray-500">
                                         <li>
-                                            <Link href="/products/list">
+                                            <Link href="/">
                                                 {t("All Products")}
                                             </Link>
                                         </li>
@@ -220,9 +211,8 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button
                                     type="button"
-                                    className={`${
-                                        currentMenu === "brands" ? "active" : ""
-                                    } nav-link group w-full`}
+                                    className={`${currentMenu === "brands" ? "active" : ""
+                                        } nav-link group w-full`}
                                     onClick={() => toggleMenu("brands")}
                                 >
                                     <div className="flex items-center">
@@ -261,9 +251,8 @@ const Sidebar = () => {
                             <li className="menu nav-item">
                                 <button
                                     type="button"
-                                    className={`${
-                                        currentMenu === "user" ? "active" : ""
-                                    } nav-link group w-full`}
+                                    className={`${currentMenu === "user" ? "active" : ""
+                                        } nav-link group w-full`}
                                     onClick={() => toggleMenu("user")}
                                 >
                                     <div className="flex items-center">
