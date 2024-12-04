@@ -38,7 +38,7 @@ const BrandsTable: React.FC = () => {
     const { data: brands, isLoading: isLoadingBrands } = useGetAllBrandsQuery(
         []
     );
-    console.log(brands);
+    console.log(brands?.data);
     const [page, setPage] = useState<number>(1);
     const PAGE_SIZES = [10, 20, 30, 50, 100];
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -197,9 +197,10 @@ const BrandsTable: React.FC = () => {
                                     {
                                         accessor: "name",
                                         sortable: true,
-                                        render: ({ name }) => (
+                                        render: ({ name, id }) => (
                                             <div className="flex items-center font-semibold">
                                                 <div>{name}</div>
+                                                <div>{id}</div>
                                             </div>
                                         ),
                                     },
