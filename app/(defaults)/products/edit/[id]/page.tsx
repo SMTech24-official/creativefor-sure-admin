@@ -141,6 +141,7 @@ export default function ProductUploadForm({ params }: any) {
     };
 
     const onSubmit = async (data: any) => {
+        console.log("🚀 ~ onSubmit ~ data:", data);
         const toastID = toast.loading("Updating Cigar");
         try {
             const res = await updateCigar({ data, id: params?.id }).unwrap();
@@ -447,7 +448,7 @@ export default function ProductUploadForm({ params }: any) {
                                     <Input
                                         id="cigarLength"
                                         type="number"
-                                        step="0.1"
+                                        step="any"
                                         placeholder="Enter length"
                                         {...register("cigarLength", {
                                             valueAsNumber: true,

@@ -95,6 +95,7 @@ export default function ProductUploadForm() {
     };
 
     const onSubmit = async (data: any) => {
+        console.log("🚀 ~ onSubmit ~ data:", data);
         const toastID = toast.loading("Uploading Cigar");
 
         try {
@@ -205,7 +206,9 @@ export default function ProductUploadForm() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-2">
                             <div className="grid w-full max-w-sm items-center gap-1.5">
-                                <Label htmlFor="cigarImage">Upload Image URL</Label>
+                                <Label htmlFor="cigarImage">
+                                    Upload Image URL
+                                </Label>
                                 <Input
                                     id="cigarImage"
                                     placeholder="Upload Image URL"
@@ -397,7 +400,7 @@ export default function ProductUploadForm() {
                             <Input
                                 id="cigarLength"
                                 type="number"
-                                step="0.1"
+                                step="any"
                                 placeholder="Enter length"
                                 {...register("cigarLength", {
                                     valueAsNumber: true,

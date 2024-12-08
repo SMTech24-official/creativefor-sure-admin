@@ -29,6 +29,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import IconLink from "@/components/icon/icon-link";
 
 const BrandsTable: React.FC = () => {
     const [createBrand, { isLoading: isCreatingBrand }] =
@@ -134,6 +135,16 @@ const BrandsTable: React.FC = () => {
         }
     };
 
+    const handleClipboard = async (id: string) => {
+        const toastID = toast.loading("Copying to clipboard");
+        try {
+            await navigator.clipboard.writeText(id);
+            toast.success(`Brand ID Copied to clipboard`, { id: toastID });
+        } catch (err) {
+            toast.error(`${err}`, { id: toastID });
+        }
+    };
+
     return (
         <div className="grid grid-cols-2 items-start gap-6">
             <div className="panel border-white-light p-5 dark:border-[#1b2e4b]">
@@ -198,9 +209,17 @@ const BrandsTable: React.FC = () => {
                                         accessor: "name",
                                         sortable: true,
                                         render: ({ name, id }) => (
-                                            <div className="flex items-center font-semibold">
+                                            <div className="flex items-center gap-2 font-semibold">
                                                 <div>{name}</div>
-                                                <div>{id}</div>
+                                                <div>
+                                                    <span
+                                                        onClick={() =>
+                                                            handleClipboard(id)
+                                                        }
+                                                    >
+                                                        <IconLink className="h-[16px] w-[16px] cursor-pointer" />
+                                                    </span>
+                                                </div>
                                             </div>
                                         ),
                                     },

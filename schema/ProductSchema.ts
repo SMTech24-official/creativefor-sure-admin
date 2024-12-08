@@ -3,7 +3,7 @@ import { z } from "zod";
 const ProductSchema = z.object({
     cigarName: z.string().nonempty("Cigar name is required"),
     brandId: z.string().nonempty("Brand ID is required"),
-    qrCode: z.string().url("Invalid URL for QR code"),
+    qrCode: z.string().nonempty("QR is required"),
     productDescription: z.string().nonempty("Product description is required"),
     cigarImage: z.string().url("Invalid URL for cigar image"),
     cigarShape: z.string().nonempty("Cigar shape is required"),
